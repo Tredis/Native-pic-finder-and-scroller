@@ -1,0 +1,3 @@
+rootProject.name = 'Scroller'
+
+include ':app'
