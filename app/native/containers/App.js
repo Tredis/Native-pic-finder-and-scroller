@@ -1,15 +1,18 @@
-
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TextInput, Image, FlatList} from 'react-native';
+import { StyleSheet, Text, View, TextInput, Image, FlatList, TouchableHighlight } from 'react-native';
 import {styles} from '../style/'
-import {getPhotos} from '../../redux/dispatchers/'
+import {getPhotos, select} from '../../redux/dispatchers/'
 import {connect} from 'react-redux';
 
 class App extends Component {
   render() {
     console.log(this.props.photos)
-    return (
-      <View style={styles.container}>
+    if(this.props.photos.selected == null){
+      return <View style={styles.container}>
+        <Image
+          style={{width: 200, height: 85}}
+          source={{uri: 'https://www.wpclipart.com/education/encouraging_words/Awesome.png'}}
+        />
         <Text style={styles.welcome}>
           Tell me what to search for
         </Text>
@@ -20,19 +23,35 @@ class App extends Component {
         <FlatList
           data={this.props.photos.list}
           renderItem={(photo) => (
-            <Image
-              style={{width: 200, height: 200}}
-              source={{uri: photo.item.webformatURL}} 
-            />
+            <TouchableHighlight onPress={() => this.props.select(photo.index)}>
+              <Image
+                style={{width: 200, height: 200}}
+                source={{uri: photo.item.webformatURL}} />
+            </TouchableHighlight>
           )}
         />
       </View>
-    );
+    }else{
+      let selected = this.props.photos.list[this.props.photos.selected]
+      return (
+        <View style={styles.container}>
+          <Text style={styles.welcome}>
+            {"User: "+ selected.user +
+            ", Tags: "+selected.tags + 
+            ", Size: "+selected.webformatWidth+"x"+ selected.webformatHeight}
+          </Text>
+          <TouchableHighlight onPress={() => this.props.select(null)}>
+            <Image
+              style={{width: 400, height: 400}}
+              source={{uri: selected.webformatURL}} />
+          </TouchableHighlight>
+        </View>
+      )
+    }
   }
-  
 }
 
-export default connect(st=>st, {getPhotos})(App);
+export default connect(st=>st, {getPhotos, select})(App);
 
 
 // {

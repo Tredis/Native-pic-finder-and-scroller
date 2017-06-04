@@ -13,7 +13,8 @@ export default function reducer (photos = initialState, action) {
       return ({selected: null, list: concat(photos.list, action.list)})
     }
     case SELECT: {
-      return Object.assign({}, photos, {selected: null})
+      console.log
+      return Object.assign({}, photos, {selected: action.i})
     }
     default: return photos;
   }
