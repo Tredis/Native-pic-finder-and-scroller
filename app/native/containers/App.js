@@ -24,15 +24,16 @@ class App extends Component {
           />
           <FlatList
             data={this.props.photos.list}
-            keyExtractor={photo => photo.index}
+            keyExtractor={item => item.id}
             ref={(ref) => { this.listRef = ref; }}
-            renderItem={(photo) => {
+            onEndReached={()=>{}}
+            renderItem={({item}) => {
               let width = Dimensions.get('window').width
               return (
-                <TouchableHighlight onPress={() => this.props.select(photo.index)}>
+                <TouchableHighlight onPress={() => this.props.select(item)}>
                   <Image
-                    style={{width: width, height: width * photo.item.webformatHeight / photo.item.webformatWidth}}
-                    source={{uri: photo.item.webformatURL}} />
+                    style={{width: width, height: width * item.webformatHeight / item.webformatWidth}}
+                    source={{uri: item.webformatURL}} />
                 </TouchableHighlight>
               )
             }}
@@ -43,13 +44,17 @@ class App extends Component {
       return(
         <View style={styles.container}>
           <FlatList
-            data={[{data:this.props.photos.list[this.props.photos.selected], key: 1}]}
+            data={[{data: this.props.photos.selected, key: 1}]}
             renderItem={({item}) => {
+              console.log("item", item)
               let {width, height} = Dimensions.get('window')
               let w = item.data.webformatWidth
               let h = item.data.webformatHeight
               return (
-                <View style={styles.container}>
+                <View
+                  style={styles.container}
+                  onLayout={()=>this.forceUpdate()}
+                >
                   <Text style={styles.welcome}>
                     {"User: " + item.data.user +
                     ", Tags: "+ item.data.tags +

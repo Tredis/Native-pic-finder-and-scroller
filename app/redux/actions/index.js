@@ -14,9 +14,9 @@ export const add_photos = (list) => {
   }
 }
 
-export const select_ = (i) => {
+export const select_ = (photo) => {
   return {
     type: SELECT,
-    i: i
+    photo: photo
   }
 }
