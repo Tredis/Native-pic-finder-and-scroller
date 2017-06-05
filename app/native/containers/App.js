@@ -6,11 +6,25 @@ import {connect} from 'react-redux';
 import Dimensions from 'Dimensions'
 
 class App extends Component {
+
+  collapse(ref, h){
+    let {width, height} = Dimensions.get('window')
+    if(width>height){
+      this.imgRef.props.style.height=0;
+      this.imgRef.forceUpdate()
+    }else{
+      this.imgRef.props.style.height=h;
+      this.imgRef.forceUpdate()
+    }
+  }
+
   render() {
     if(this.props.photos.selected == null){
       return (
         <View style={styles.container}>
           <Image
+            ref={ref => { this.imgRef = ref }}
+            onLayout={()=>this.collapse(this.imgRef, 85)}
             style={{width: 200, height: 85}}
             source={{uri: 'https://www.wpclipart.com/education/encouraging_words/Awesome.png'}}
           />
