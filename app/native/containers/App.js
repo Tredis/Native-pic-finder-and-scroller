@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, TextInput, Image, FlatList, TouchableHighlight } from 'react-native';
 import {styles} from '../style/'
-import {getPhotos, select} from '../../redux/dispatchers/'
+import {getPhotos, addPhotos, select} from '../../redux/dispatchers/'
 import {connect} from 'react-redux';
 import Dimensions from 'Dimensions'
 
 class App extends Component {
   render() {
-    console.log(this.props.photos)
     if(this.props.photos.selected == null){
       return (
         <View style={styles.container}>
@@ -26,7 +25,7 @@ class App extends Component {
             data={this.props.photos.list}
             keyExtractor={item => item.id}
             ref={(ref) => { this.listRef = ref; }}
-            onEndReached={()=>{}}
+            onEndReached={() => this.props.addPhotos(this.props.photos.searchPhrase, 1+this.props.photos.page)}
             renderItem={({item}) => {
               let width = Dimensions.get('window').width
               return (
@@ -46,7 +45,6 @@ class App extends Component {
           <FlatList
             data={[{data: this.props.photos.selected, key: 1}]}
             renderItem={({item}) => {
-              console.log("item", item)
               let {width, height} = Dimensions.get('window')
               let w = item.data.webformatWidth
               let h = item.data.webformatHeight
@@ -82,7 +80,7 @@ class App extends Component {
   }
 }
 
-export default connect(st=>st, {getPhotos, select})(App);
+export default connect(st=>st, {getPhotos, addPhotos, select})(App);
 
 //onEndReached?
 //scrollToIndex(params: object)

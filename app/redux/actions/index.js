@@ -1,8 +1,9 @@
 import { GET_PHOTOS, ADD_PHOTOS, SELECT } from '../constants/';
 
-export const get_photos = (list) => {
+export const get_photos = (list, searchPhrase) => {
   return {
     type: GET_PHOTOS,
+    searchPhrase: searchPhrase,
     list: list
   }
 }
