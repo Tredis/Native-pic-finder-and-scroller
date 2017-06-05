@@ -1,4 +1,3 @@
-//import store from './app/native/containers/Root';
 import { get_photos, add_photos, select_ } from '../actions/';
 const API_KEY = '5525786-448a52042ee303672ab284d1e';
 

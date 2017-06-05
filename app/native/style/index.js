@@ -18,5 +18,10 @@ export const styles = StyleSheet.create({
     borderColor: 'gray', 
     borderWidth: 1,
     textAlign: 'center',
-  }
+  },
+  collapse: {
+    flexDirection:'row', 
+    flexWrap:'wrap', 
+    justifyContent: 'center'
+  },
 })

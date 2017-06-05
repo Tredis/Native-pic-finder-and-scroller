@@ -17,11 +17,12 @@ export default function reducer (photos = initialState, action) {
               list: action.list}
     }
     case ADD_PHOTOS: {
-      return Object.assign( {}, photos, {list: photos.list.concat(action.list), page: 1+photos.page})
+      return Object.assign( {}, photos, {list: photos.list.concat(action.list), 
+                                         page: 1+photos.page})
     }
     case SELECT: {
       return Object.assign( {}, photos, action.photo ? 
-                                        {selected: action.photo, scroll: action.photo}
+                                        {selected: action.photo, scroll: action.photo.id}
                                        :{selected: null} )
     }
     default: return photos;

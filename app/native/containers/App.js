@@ -9,13 +9,8 @@ class App extends Component {
 
   collapseLogo(h){
     let {width, height} = Dimensions.get('window')
-    if(width>height){
-      this.imgRef.props.style.height=0;
-      this.imgRef.forceUpdate()
-    }else{
-      this.imgRef.props.style.height=h;
-      this.imgRef.forceUpdate()
-    }
+    this.imgRef.props.style.height = width>height ? 0 : h;
+    this.imgRef.forceUpdate()
   }
 
   render() {
@@ -28,20 +23,23 @@ class App extends Component {
             style={{width: 200, height: 85}}
             source={{uri: 'https://www.wpclipart.com/education/encouraging_words/Awesome.png'}}
           />
-          <View style={{flexDirection:'row', flexWrap:'wrap', justifyContent: 'center'}}>
-            <Text style={styles.welcome} ref={ref => { this.txtRef = ref }}>
+          <View style={styles.collapse}>
+            <Text 
+              style={styles.welcome} 
+              ref={ref => { this.txtRef = ref }}
+            >
               Tell me what to search for
             </Text>
             <TextInput
-              ref={ref => { this.txtInRef = ref }}
               style={styles.txtIn}
+              ref={ref => { this.txtInRef = ref }}
               onSubmitEditing={ e => this.props.getPhotos(e.nativeEvent.text)}
             />
           </View>
           <FlatList
             data={this.props.photos.list}
             keyExtractor={item => item.id}
-            ref={(ref) => { this.listRef = ref; }}
+            ref={ref => { this.listRef = ref; }}
             onEndReached={() => this.props.addPhotos(this.props.photos.searchPhrase, 1+this.props.photos.page)}
             renderItem={({item}) => {
               let width = Dimensions.get('window').width
@@ -99,9 +97,7 @@ class App extends Component {
 
 export default connect(st=>st, {getPhotos, addPhotos, select})(App);
 
-//onEndReached?
-//scrollToIndex(params: object)
-
+//Pixabay API format
 // {
 //     "total": 4692,
 //     "totalHits": 500,
