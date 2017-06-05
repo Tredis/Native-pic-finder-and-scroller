@@ -24,15 +24,11 @@ class App extends Component {
             source={{uri: 'https://www.wpclipart.com/education/encouraging_words/Awesome.png'}}
           />
           <View style={styles.collapse}>
-            <Text 
-              style={styles.welcome} 
-              ref={ref => { this.txtRef = ref }}
-            >
+            <Text style={styles.welcome} >
               Tell me what to search for
             </Text>
             <TextInput
               style={styles.txtIn}
-              ref={ref => { this.txtInRef = ref }}
               onSubmitEditing={ e => this.props.getPhotos(e.nativeEvent.text)}
             />
           </View>
