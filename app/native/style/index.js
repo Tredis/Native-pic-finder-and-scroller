@@ -11,5 +11,12 @@ export const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
     margin: 10,
+  },
+  txtIn: {
+    height: 40, 
+    width: 200, 
+    borderColor: 'gray', 
+    borderWidth: 1,
+    textAlign: 'center',
   }
-});
+})

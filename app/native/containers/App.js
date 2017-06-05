@@ -7,7 +7,7 @@ import Dimensions from 'Dimensions'
 
 class App extends Component {
 
-  collapse(ref, h){
+  collapseLogo(h){
     let {width, height} = Dimensions.get('window')
     if(width>height){
       this.imgRef.props.style.height=0;
@@ -24,17 +24,20 @@ class App extends Component {
         <View style={styles.container}>
           <Image
             ref={ref => { this.imgRef = ref }}
-            onLayout={()=>this.collapse(this.imgRef, 85)}
+            onLayout={()=>{this.collapseLogo(85)}}
             style={{width: 200, height: 85}}
             source={{uri: 'https://www.wpclipart.com/education/encouraging_words/Awesome.png'}}
           />
-          <Text style={styles.welcome}>
-            Tell me what to search for
-          </Text>
-          <TextInput
-            style={{height: 40, width: 200, borderColor: 'gray', borderWidth: 1}}
-            onSubmitEditing={ e => this.props.getPhotos(e.nativeEvent.text)}
-          />
+          <View style={{flexDirection:'row', flexWrap:'wrap', justifyContent: 'center'}}>
+            <Text style={styles.welcome} ref={ref => { this.txtRef = ref }}>
+              Tell me what to search for
+            </Text>
+            <TextInput
+              ref={ref => { this.txtInRef = ref }}
+              style={styles.txtIn}
+              onSubmitEditing={ e => this.props.getPhotos(e.nativeEvent.text)}
+            />
+          </View>
           <FlatList
             data={this.props.photos.list}
             keyExtractor={item => item.id}
