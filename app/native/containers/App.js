@@ -91,14 +91,11 @@ class App extends Component {
               return (
                 <TouchableHighlight onPress={() => this.toDetail(item)}>
                   <Image
-                    style={width<height ? {width: width, 
-                                           height: width * item.webformatHeight / item.webformatWidth
-                                          }
-                                        : {width: width / 2, 
-                                           height: width * item.webformatHeight / item.webformatWidth / 2
-                                          }
-                          }
-                    source={{uri: item.webformatURL}} />
+                    source={{uri: item.webformatURL}} 
+                    style={{width: width / (width<height ? 1:2), 
+                            height: width * item.webformatHeight / item.webformatWidth / (width<height ? 1:2)
+                          }}
+                  />
                 </TouchableHighlight>
               )
             }}
