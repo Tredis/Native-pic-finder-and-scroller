@@ -1,17 +1,61 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, TextInput, Image, FlatList, TouchableHighlight } from 'react-native';
 import {styles} from '../style/'
-import {getPhotos, addPhotos, select} from '../../redux/dispatchers/'
+import {getPhotos, addPhotos, select, setOffset} from '../../redux/dispatchers/'
 import {connect} from 'react-redux';
 import Dimensions from 'Dimensions'
 
 class App extends Component {
-
-  collapseLogo(h){
-    let {width, height} = Dimensions.get('window')
-    this.imgRef.props.style.height = width>height ? 0 : h;
-    this.imgRef.forceUpdate()
+  constructor(props) {
+    super(props);
+    this.state = {
+      listKey: Math.random(),
+    }
   }
+
+  rotate(){
+    this.setState({ listKey: Math.random() })
+    this.imgRef.forceUpdate()
+    if(this.listRef._listRef._scrollMetrics.offset){
+      this.props.setOffset(this.orientatationToggle(
+                              this.listRef._listRef._scrollMetrics.offset * 2, 
+                              this.listRef._listRef._scrollMetrics.offset)
+                          )
+    }
+  }
+  setScrollOffset(){
+    if(this.listRef){
+      this.props.setOffset(this.orientatationToggle(
+                              this.listRef._listRef._scrollMetrics.offset, 
+                              this.listRef._listRef._scrollMetrics.offset * 2)
+                          )
+    }
+  }
+  orientatationToggle(portrait, landscape){
+    let {width, height} = Dimensions.get('window')
+    return width < height ? portrait : landscape
+  }
+
+  toDetail(item){
+    this.props.select(item)
+    this.setScrollOffset()
+  }
+  
+  scrollTo(){
+    if(this.props.photos.scrollOffset){
+      this.listRef.scrollToOffset(
+        {animated: true, offset: this.orientatationToggle(this.props.photos.scrollOffset, 
+                                                          this.props.photos.scrollOffset / 2)
+        }
+      )
+    }
+  }
+  submit(text){
+    this.props.getPhotos(text); 
+    this.props.setOffset(0); 
+    this.listRef.scrollToOffset(0);
+  }
+
 
   render() {
     if(this.props.photos.selected == null){
@@ -19,30 +63,41 @@ class App extends Component {
         <View style={styles.container}>
           <Image
             ref={ref => { this.imgRef = ref }}
-            onLayout={()=>{this.collapseLogo(85)}}
-            style={{width: 200, height: 85}}
+            onLayout={()=>this.rotate()}
+            style={{width: 200, height: this.orientatationToggle(85, 0)}}
             source={{uri: 'https://www.wpclipart.com/education/encouraging_words/Awesome.png'}}
           />
-          <View style={styles.collapse}>
+          <View style={styles.collapse} >
             <Text style={styles.welcome} >
               Tell me what to search for
             </Text>
             <TextInput
               style={styles.txtIn}
-              onSubmitEditing={ e => this.props.getPhotos(e.nativeEvent.text)}
+              onFocus={()=>this.setScrollOffset()}
+              onSubmitEditing={ e => this.submit(e.nativeEvent.text)}
             />
           </View>
           <FlatList
             data={this.props.photos.list}
+            key={this.state.listKey}
             keyExtractor={item => item.id}
             ref={ref => { this.listRef = ref; }}
-            onEndReached={() => this.props.addPhotos(this.props.photos.searchPhrase, 1+this.props.photos.page)}
+            onLayout={()=>this.scrollTo()}
+            numColumns={this.orientatationToggle(1, 2)}
+            onEndReached={() => this.props.addPhotos(this.props.photos.searchPhrase, 
+                                                    1+this.props.photos.page)}
             renderItem={({item}) => {
-              let width = Dimensions.get('window').width
+              let {width, height} = Dimensions.get('window')
               return (
-                <TouchableHighlight onPress={() => this.props.select(item)}>
+                <TouchableHighlight onPress={() => this.toDetail(item)}>
                   <Image
-                    style={{width: width, height: width * item.webformatHeight / item.webformatWidth}}
+                    style={width<height ? {width: width, 
+                                           height: width * item.webformatHeight / item.webformatWidth
+                                          }
+                                        : {width: width / 2, 
+                                           height: width * item.webformatHeight / item.webformatWidth / 2
+                                          }
+                          }
                     source={{uri: item.webformatURL}} />
                 </TouchableHighlight>
               )
@@ -64,16 +119,17 @@ class App extends Component {
                   style={styles.container}
                   onLayout={()=>this.forceUpdate()}
                 >
-                  <Text style={styles.welcome}>
+                  <Text style={styles.welcome} >
                     {"User: " + item.data.user +
                     ", Tags: "+ item.data.tags +
                     ", Size: "+ item.data.webformatWidth+"x"+item.data.webformatHeight}
                   </Text>
-                  <TouchableHighlight onPress={() => this.props.select(null)}>
+                  <TouchableHighlight onPress={() => this.props.select(null)} >
                     <Image
-                      style={{width: (w*height > h*width ? width : height*w/h),
-                              height:(w*height > h*width ? width*h/w : height)}}
-                      source={{uri: item.data.webformatURL}} />
+                      style={w*height > h*width ? {width: width, height: width*h/w}
+                                                : {width: height*w/h, height: height}}
+                      source={{uri: item.data.webformatURL}} 
+                    />
                   </TouchableHighlight>
                 </View>
               )
@@ -83,15 +139,12 @@ class App extends Component {
       )
     }
   }
-  componentDidUpdate(){
-    if(this.props.photos.scroll && !this.props.photos.selected){
-      this.listRef.scrollTop = this.listRef.scrollHeight/2; //  neither of these work
-      this.listRef.scrollToOffset({animated: true, offset: 100}) // for some reason
-    }
-  }
+
+
 }
 
-export default connect(st=>st, {getPhotos, addPhotos, select})(App);
+
+export default connect(st=>st, {getPhotos, addPhotos, select, setOffset})(App);
 
 //Pixabay API format
 // {

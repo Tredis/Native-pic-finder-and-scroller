@@ -1,4 +1,4 @@
-import { get_photos, add_photos, select_ } from '../actions/';
+import { get_photos, add_photos, select_, set_offset } from '../actions/';
 const API_KEY = '5525786-448a52042ee303672ab284d1e';
 
 export const getPhotos = searchPhrase =>  dispatch => 
@@ -7,10 +7,10 @@ export const getPhotos = searchPhrase =>  dispatch =>
 	.then(photos => {
 	  if (parseInt(photos.totalHits) > 0){
 	    dispatch(get_photos(photos.hits, searchPhrase))
-	  }else console.log('No hits')
+	  }else dispatch(get_photos([], searchPhrase))
 	})
 	.catch(err => console.error(err))
-  
+
 
 export const addPhotos = (searchPhrase, page) => dispatch => 
 	fetch("https://pixabay.com/api/?key="+API_KEY+"&q="+encodeURIComponent(searchPhrase)+"&page="+page)
@@ -18,12 +18,11 @@ export const addPhotos = (searchPhrase, page) => dispatch =>
 	.then(photos => {
 	  if (parseInt(photos.totalHits) > 0){
 	    dispatch(add_photos(photos.hits))
-	  }else console.log('No hits')
+	  }
 	})
 	.catch(err => console.dir(err))
 
 
-export const select = photo => {
-	return select_(photo)
+export const select = photo => select_(photo)
 
-}
+export const setOffset = offset => set_offset(offset)

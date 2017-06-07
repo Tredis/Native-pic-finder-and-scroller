@@ -1,23 +1,13 @@
-import { GET_PHOTOS, ADD_PHOTOS, SELECT } from '../constants/';
+import { GET_PHOTOS, ADD_PHOTOS, SELECT, SET_OFFSET } from '../constants/';
 
-export const get_photos = (list, searchPhrase) => {
-  return {
-    type: GET_PHOTOS,
-    searchPhrase: searchPhrase,
-    list: list
-  }
-}
+export const get_photos = (list, searchPhrase) => ({
+  type: GET_PHOTOS,
+  searchPhrase: searchPhrase,
+  list: list
+})
 
-export const add_photos = (list) => {
-  return {
-    type: ADD_PHOTOS,
-    list: list
-  }
-}
+export const add_photos = (list) => ({type: ADD_PHOTOS, list})
 
-export const select_ = (photo) => {
-  return {
-    type: SELECT,
-    photo: photo
-  }
-}
+export const select_ = (photo) => ({type: SELECT, photo})
+
+export const set_offset = (offset) => ({type: SET_OFFSET, offset})
