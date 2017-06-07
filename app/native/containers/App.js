@@ -106,6 +106,7 @@ class App extends Component {
     }else{
       return(
         <View style={styles.container}>
+          <StatusBar hidden />
           <FlatList
             data={[{data: this.props.photos.selected, key: 1}]}
             renderItem={({item}) => {
