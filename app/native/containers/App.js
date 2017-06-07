@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TextInput, Image, FlatList, TouchableHighlight } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Image, FlatList, TouchableHighlight, StatusBar } from 'react-native';
 import {styles} from '../style/'
 import {getPhotos, addPhotos, select, setOffset} from '../../redux/dispatchers/'
 import {connect} from 'react-redux';
@@ -61,6 +61,7 @@ class App extends Component {
     if(this.props.photos.selected == null){
       return (
         <View style={styles.container}>
+          <StatusBar hidden />
           <Image
             ref={ref => { this.imgRef = ref }}
             onLayout={()=>this.rotate()}
