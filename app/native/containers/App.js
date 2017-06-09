@@ -9,21 +9,22 @@ import {
   TouchableHighlight, 
   StatusBar 
 } from 'react-native';
-import {styles} from '../style/'
-import {getPhotos, addPhotos, select, setOffset, setDim} from '../../redux/dispatchers/'
+import {styles} from '../style/';
+import {getPhotos, addPhotos, select, setOffset, setDim} from '../../redux/dispatchers/';
 import {connect} from 'react-redux';
-import Dimensions from 'Dimensions'
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       listKey: Math.random(),
-      detail: [{data: this.props.photos.selected, key: 1}]
+      detail: [{data: this.props.photos.selected, key: 1}],
+      pageRequest: this.props.photos.loadedPage,
     }
   }
 //METHODS////////---------
   rotate = layout =>{
+    console.log(this.state.pageRequest , this.props.photos.loadedPage)
     this.props.setDim(layout); 
     this.setState({ listKey: Math.random()})
     this.props.setOffset(this.listRef._listRef._scrollMetrics.offset * this.props.layout.columns)
@@ -37,8 +38,10 @@ class App extends Component {
   
   submit = text =>{
     this.props.getPhotos(text); 
+    this.setState({pageRequest: 1})
     this.props.setOffset(0); 
     this.listRef.scrollToOffset(0);
+
   }
 
   scrollTo = () =>{
@@ -52,8 +55,13 @@ class App extends Component {
 
   _keyExtractor = item => item.id
   
-  _onEndReached = () => this.props.addPhotos(this.props.photos.searchPhrase, 
-                                             1+this.props.photos.page)
+  _onEndReached = () => {
+    console.log(this.state.pageRequest , this.props.photos.loadedPage)
+    if(this.state.pageRequest == this.props.photos.loadedPage){
+      this.setState({pageRequest: 1+this.props.photos.loadedPage})
+      this.props.addPhotos(this.props.photos.searchPhrase, 1+this.props.photos.loadedPage)
+    }
+  }
 //LIST ITEMS////////---------
 
   _renderListItem = ({item}) => (
@@ -80,7 +88,7 @@ class App extends Component {
           ", Tags: "+ item.data.tags +
           ", Size: "+ item.data.webformatWidth+"x"+item.data.webformatHeight}
         </Text>
-        <TouchableHighlight onPress={() => {this.props.select(null)}} >
+        <TouchableHighlight onPress={() => this.props.select(null)} >
           <Image
             style={w*height > h*width ? {width: width, height: width*h/w}
                                       : {width: height*w/h, height: height}}
@@ -100,10 +108,10 @@ class App extends Component {
           onLayout={e => this.rotate(e.nativeEvent.layout)} >
           <StatusBar hidden />
           {this.props.layout.orientation == 'portrait' &&
-          <Image
-            style={{width: 200, height: 85}}
-            source={{uri: 'https://www.wpclipart.com/education/encouraging_words/Awesome.png'}}
-          />}
+            <Image
+              style={{width: 200, height: 85}}
+              source={{uri: 'https://www.wpclipart.com/education/encouraging_words/Awesome.png'}}
+            />}
           <View style={styles.collapse} >
             <Text style={styles.welcome} >
               Tell me what to search for

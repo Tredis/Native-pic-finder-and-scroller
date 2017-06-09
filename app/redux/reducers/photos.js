@@ -3,7 +3,7 @@ import { GET_PHOTOS, ADD_PHOTOS, SELECT, SET_OFFSET } from '../constants/';
 const initialState = {
   selected: null,
   searchPhrase: "",
-  page: 1,
+  loadedPage: 1,
   scrollOffset: 0,
   list: []
 }
@@ -12,13 +12,13 @@ export default function reducer (photos = initialState, action) {
     case GET_PHOTOS:{
       return {selected: null, 
               searchPhrase: action.searchPhrase, 
-              page: 1,
+              loadedPage: 1,
               scrollOffset: 0, 
               list: action.list}
     }
     case ADD_PHOTOS: {
       return Object.assign( {}, photos, {list: photos.list.concat(action.list), 
-                                         page: 1+photos.page, 
+                                         loadedPage: 1+photos.loadedPage, 
                                          scrollOffset: 0} 
                           )
     }
