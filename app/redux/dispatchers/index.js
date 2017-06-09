@@ -1,4 +1,4 @@
-import { get_photos, add_photos, select_, set_offset } from '../actions/';
+import { get_photos, add_photos, select_, set_offset, set_dim } from '../actions/';
 const API_KEY = '5525786-448a52042ee303672ab284d1e';
 
 export const getPhotos = searchPhrase =>  dispatch => 
@@ -26,3 +26,5 @@ export const addPhotos = (searchPhrase, page) => dispatch =>
 export const select = photo => select_(photo)
 
 export const setOffset = offset => set_offset(offset)
+
+export const setDim = layout => set_dim(layout)
